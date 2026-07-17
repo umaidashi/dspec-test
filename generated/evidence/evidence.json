@@ -13,13 +13,13 @@
     "bounds": null,
     "theoremName": null,
     "invariantName": null,
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": null,
     "counterexample": null,
-    "contextDigest": "sha256:0fd5265c8b17fee09399d01c2c02434c",
-    "evidenceId": "ev_d898cd59842380b455cf16784a2c15aa"
+    "contextDigest": "sha256:515219ce8762a06c89880196c74994b4",
+    "evidenceId": "ev_6af9dd569f457ff1477bd51cf9c8ba67"
   },
   {
     "ruleId": "ACC-JOURNAL-001",
@@ -35,13 +35,13 @@
     "bounds": null,
     "theoremName": null,
     "invariantName": null,
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": null,
     "counterexample": null,
-    "contextDigest": "sha256:c4f5f0a2b96cf55184538fbf0ce57354",
-    "evidenceId": "ev_09d2469f2063b2200e4bc45deb89d22c"
+    "contextDigest": "sha256:e2f078f3677cc6d9cf962b80a8f496dd",
+    "evidenceId": "ev_db92074af153416f83cd9056a07a7964"
   },
   {
     "ruleId": "ACC-JOURNAL-001",
@@ -57,13 +57,13 @@
     "bounds": null,
     "theoremName": null,
     "invariantName": null,
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": null,
     "counterexample": null,
-    "contextDigest": "sha256:a574f0a7f3cc30efbf48565bf067bd3a",
-    "evidenceId": "ev_825506335694e323c698cc22b73f4e6b"
+    "contextDigest": "sha256:cd1747c878ecae9513cb02c6dc10e95b",
+    "evidenceId": "ev_39ee0d1fabcc4f75a9c55ad2b39b4a48"
   },
   {
     "ruleId": "ACC-JOURNAL-001",
@@ -79,13 +79,13 @@
     "bounds": null,
     "theoremName": "trial_balance_preserved",
     "invariantName": null,
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": "sha256:c50db0b5e4dd3b7661c0dcf7232a6fc7",
     "counterexample": null,
-    "contextDigest": "sha256:76d87263996c80198915652410192088",
-    "evidenceId": "ev_7ce9c2354672826b7524a1407191cc12"
+    "contextDigest": "sha256:6cb0a61a4c224d561ef913347a8d90ef",
+    "evidenceId": "ev_8dbf083e0942d28f71e2b7de43c35193"
   },
   {
     "ruleId": "ACC-PERIOD-003",
@@ -101,13 +101,13 @@
     "bounds": null,
     "theoremName": null,
     "invariantName": null,
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": null,
     "counterexample": null,
-    "contextDigest": "sha256:f8d54db17669c3763d2d20734acab6e7",
-    "evidenceId": "ev_33ade5bfde4efb3be6daf8b343ed1c5c"
+    "contextDigest": "sha256:5150791c025a9f5be8eed2654533b7ae",
+    "evidenceId": "ev_73372af793dc68b368fe6c0791a8fcb4"
   },
   {
     "ruleId": "ACC-PERIOD-003",
@@ -123,13 +123,13 @@
     "bounds": null,
     "theoremName": null,
     "invariantName": null,
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": null,
     "counterexample": null,
-    "contextDigest": "sha256:44255bf6692cd155f10975a58f84d9ab",
-    "evidenceId": "ev_1c474778f307af890b5e2e8e1c7a2e42"
+    "contextDigest": "sha256:f03aae6c6aa86d3673fe03f73357bbc9",
+    "evidenceId": "ev_ca59c00c8f93cc131454d55f737f0b89"
   },
   {
     "ruleId": "ACC-PERIOD-003",
@@ -157,13 +157,13 @@
     },
     "theoremName": null,
     "invariantName": "NoMutationWhenClosed",
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": "sha256:61979052a8cd8ab4137495be00c897f5",
     "counterexample": null,
-    "contextDigest": "sha256:a6074f0b254b726654b15885da9d283a",
-    "evidenceId": "ev_8ae7a7f440577c7cfc4419d18c205410"
+    "contextDigest": "sha256:b6c9be37eacbd31de270a908cdcab745",
+    "evidenceId": "ev_c83d684cd194a6fc5c36417c82c134c6"
   },
   {
     "ruleId": "ACC-TENANT-001",
@@ -179,13 +179,13 @@
     "bounds": null,
     "theoremName": null,
     "invariantName": null,
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": null,
     "counterexample": null,
-    "contextDigest": "sha256:8579a6d29fe54e00b7d3414b0028e0ea",
-    "evidenceId": "ev_4e4e6a9cac5b257a009482ae1b3162eb"
+    "contextDigest": "sha256:5371588ff5d0c6446b6d5abdb2e62fe8",
+    "evidenceId": "ev_7da520b47aacd6521c1c644d964ecb7a"
   },
   {
     "ruleId": "ACC-TENANT-001",
@@ -201,13 +201,13 @@
     "bounds": null,
     "theoremName": null,
     "invariantName": null,
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": null,
     "counterexample": null,
-    "contextDigest": "sha256:a685afb1f22f7bf0403d4c97a5ca0e2e",
-    "evidenceId": "ev_259efca2d8210c35ccfc73f06e7e4e8a"
+    "contextDigest": "sha256:77fdda499e7e60622849912d022ac7be",
+    "evidenceId": "ev_8554a5ac4c4f525a92ae1dedd2bd0217"
   },
   {
     "ruleId": "ACC-TENANT-001",
@@ -232,13 +232,13 @@
     },
     "theoremName": null,
     "invariantName": "TenantIsolation",
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": "sha256:494a4e93f9e78ecd81bdb605ccae9c1b",
     "counterexample": null,
-    "contextDigest": "sha256:8015b918057b3265c85617797b07d388",
-    "evidenceId": "ev_a3a6176929e83942e6ffa627283f3f84"
+    "contextDigest": "sha256:2e4d1023b6f111db9b12d24baaf2c852",
+    "evidenceId": "ev_761af9eb9715729091451f2a5a75c168"
   },
   {
     "ruleId": "ACC-SYNC-001",
@@ -254,13 +254,13 @@
     "bounds": null,
     "theoremName": null,
     "invariantName": null,
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": null,
     "counterexample": null,
-    "contextDigest": "sha256:611d80e793e747b416be156c1ff881a0",
-    "evidenceId": "ev_10ed1aada72a6a3e47a1272d7304da72"
+    "contextDigest": "sha256:3051cf020f06c397f0e01cdbbc2753a4",
+    "evidenceId": "ev_b152e5db96f0e8da7d6058c6568ae9f5"
   },
   {
     "ruleId": "ACC-SYNC-001",
@@ -276,13 +276,13 @@
     "bounds": null,
     "theoremName": null,
     "invariantName": null,
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": null,
     "counterexample": null,
-    "contextDigest": "sha256:bb38a05ec3e67bf90d9d4426646614c2",
-    "evidenceId": "ev_bbbdd15f4018d389c58a6ab96899f29c"
+    "contextDigest": "sha256:a0d832be0356a09ce01ab11366da8613",
+    "evidenceId": "ev_fb598a069ec1aeb14c3ff3d39240c007"
   },
   {
     "ruleId": "ACC-SYNC-001",
@@ -315,12 +315,12 @@
     },
     "theoremName": null,
     "invariantName": "IdempotentExternalSync",
-    "modelDigest": "sha256:a834ebb2f580c82cf13fc3f6a6fb7889",
+    "modelDigest": "sha256:0ef6bb433fd76512dcac03d0f43560ca",
     "coreIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
     "sourceMapDigest": "sha256:3039ddab92694463e2a5c4a707b5ec04",
     "artifactDigest": "sha256:47348a47e048a2a635c6ca9dedf3b4eb",
     "counterexample": null,
-    "contextDigest": "sha256:2402e945a36fc396726a23e3e372bb86",
-    "evidenceId": "ev_a73c77628b5ac35f9dbc0b49b3783540"
+    "contextDigest": "sha256:210869e55b35c0a4049ee1f7f49f3557",
+    "evidenceId": "ev_825f99722f8aa6ba4fc024e419653b45"
   }
 ]

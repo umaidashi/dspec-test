@@ -12,5 +12,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@pkl-community/pkl": "^0.30.2"
   }
 }

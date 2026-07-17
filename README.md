@@ -63,10 +63,15 @@ node src/cli.mjs applicability examples/accounting-core.pkl
 
 ## Toolchain note (honest assurance without external provers)
 
-This environment has no `pkl`, `lean`, `tlc`, or Alloy binaries, so:
+- **Pkl is real**: the devDependency `@pkl-community/pkl` provides the official
+  Pkl evaluator, and the loader uses it whenever present (`pnpm install` is
+  enough). Without it, a constrained-subset parser (`src/core/pkl.mjs`) takes
+  over; both evaluators are pinned to produce identical model digests
+  (`test/pkl-evaluator.test.mjs`), so evidence validity does not depend on
+  which one loaded the model.
 
-- `.pkl` files are parsed by a constrained-subset parser (`src/core/pkl.mjs`);
-  anything outside the subset is a parse error, never a silent misread.
+`lean`, `tlc`, and Alloy are not installable in this sandbox (their
+distribution channels — GitHub Releases, Maven Central — are blocked), so:
 - The emitted Lean / TLA+ / Alloy sources (`generated/`) are real and intended
   for those tools. Verification falls back to built-in checkers that discharge
   the *same* obligations at the *same* assurance level:

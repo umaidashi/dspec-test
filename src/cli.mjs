@@ -58,7 +58,8 @@ try {
   switch (cmd) {
     case "check": {
       const path = pos[1] || fail("usage: dspec check <model.pkl>");
-      const { model, errors } = loadModel(path);
+      const { model, errors, evaluator } = loadModel(path);
+      console.log(`evaluator: ${evaluator === "pkl" ? "pkl (real)" : "dspec subset parser"}`);
       if (errors.length) {
         console.error(`✗ ${errors.length} type error(s):`);
         for (const e of errors) console.error(`  - ${e}`);
