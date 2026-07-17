@@ -1,0 +1,17 @@
+{
+  "description": "Mutation catalog. Each entry injects a specific fault into a rule's verification subject; the rule's primary verifier MUST catch it (counterexample or failing property). `dspec mutation` runs the whole catalog and exits non-zero if any mutant survives.",
+  "mutations": [
+    { "ruleId": "ACC-JOURNAL-001", "name": "flip-equality", "engine": "property", "fault": "debitTotal == creditTotal replaced by !=" },
+    { "ruleId": "ACC-JOURNAL-001", "name": "drop-debit-line", "engine": "property", "fault": "one debit line excluded from the debit total" },
+    { "ruleId": "ACC-PERIOD-003", "name": "drop-closed-guard", "engine": "model-check", "fault": "closed-period guard removed from all mutations" },
+    { "ruleId": "ACC-PERIOD-003", "name": "allow-delete", "engine": "model-check", "fault": "delete permitted in closed periods" },
+    { "ruleId": "ACC-PERIOD-003", "name": "allow-update", "engine": "model-check", "fault": "update permitted after close" },
+    { "ruleId": "ACC-TENANT-001", "name": "drop-all-tenant", "engine": "relational-check", "fault": "tenant comparison removed everywhere" },
+    { "ruleId": "ACC-TENANT-001", "name": "drop-period-tenant", "engine": "relational-check", "fault": "tenant comparison removed for period only" },
+    { "ruleId": "ACC-TENANT-001", "name": "drop-sync-tenant", "engine": "relational-check", "fault": "tenant comparison removed for sync only" },
+    { "ruleId": "ACC-SYNC-001", "name": "drop-key-compare", "engine": "model-check", "fault": "idempotencyKey comparison removed" },
+    { "ruleId": "ACC-SYNC-001", "name": "drop-tenant-compare", "engine": "model-check", "fault": "tenant comparison removed" },
+    { "ruleId": "ACC-SYNC-001", "name": "drop-provider-compare", "engine": "model-check", "fault": "provider comparison removed" },
+    { "ruleId": "ACC-SYNC-001", "name": "drop-guard", "engine": "model-check", "fault": "success-reuse guard removed (rebinding allowed)" }
+  ]
+}

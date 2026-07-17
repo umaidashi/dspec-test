@@ -1,0 +1,203 @@
+{
+  "version": 1,
+  "model": "accounting-core",
+  "modelIRDigest": "sha256:5495c7c237ad665afc384032751f63f6",
+  "rules": [
+    {
+      "ruleId": "ACC-JOURNAL-001",
+      "classification": "numeric-invariant",
+      "primaryStrategy": "lean",
+      "primaryBackend": "lean",
+      "clauses": [
+        {
+          "clause": "must[0]",
+          "coreIRNode": "clause:ACC-JOURNAL-001#must[0]",
+          "irKind": "invariant",
+          "render": "implies(isApprovedOrPosted(entry), eq(debitTotal(entry), creditTotal(entry)))",
+          "generated": [
+            {
+              "backend": "lean",
+              "generatedSelector": "journal_balanced",
+              "artifact": "generated/lean/AccountingJournal.lean",
+              "artifactDigest": "sha256:c50db0b5e4dd3b7661c0dcf7232a6fc7",
+              "evidence": []
+            }
+          ]
+        },
+        {
+          "clause": "must[1]",
+          "coreIRNode": "clause:ACC-JOURNAL-001#must[1]",
+          "irKind": "invariant",
+          "render": "implies(forall(e, entries, balanced(e)), eq(sum(entries, debitTotal), sum(entries, creditTotal)))",
+          "generated": [
+            {
+              "backend": "lean",
+              "generatedSelector": "trial_balance_preserved",
+              "artifact": "generated/lean/AccountingJournal.lean",
+              "artifactDigest": "sha256:c50db0b5e4dd3b7661c0dcf7232a6fc7",
+              "evidence": []
+            }
+          ]
+        }
+      ],
+      "implementationRefs": [
+        {
+          "kind": "implementation",
+          "file": "src/domain/journal.mjs",
+          "anchor": "debitTotal"
+        },
+        {
+          "kind": "test",
+          "file": "test/journal.test.mjs",
+          "anchor": "ACC-JOURNAL-001"
+        }
+      ]
+    },
+    {
+      "ruleId": "ACC-PERIOD-003",
+      "classification": "state-transition",
+      "primaryStrategy": "tla",
+      "primaryBackend": "tla",
+      "clauses": [
+        {
+          "clause": "must[0]",
+          "coreIRNode": "clause:ACC-PERIOD-003#must[0]",
+          "irKind": "transition",
+          "render": "implies(periodClosed(periodOf(entry)), and(not(create(entry)), and(not(update(entry)), not(delete(entry)))))",
+          "generated": [
+            {
+              "backend": "tla",
+              "generatedSelector": "ClosedPeriodImmutable",
+              "artifact": "generated/accounting/AccountingPeriod.tla",
+              "artifactDigest": "sha256:61979052a8cd8ab4137495be00c897f5",
+              "evidence": []
+            }
+          ]
+        }
+      ],
+      "implementationRefs": [
+        {
+          "kind": "implementation",
+          "file": "src/domain/period.mjs",
+          "anchor": "assertMutable"
+        },
+        {
+          "kind": "test",
+          "file": "test/period.test.mjs",
+          "anchor": "ACC-PERIOD-003"
+        }
+      ]
+    },
+    {
+      "ruleId": "ACC-TENANT-001",
+      "classification": "relational-invariant",
+      "primaryStrategy": "alloy",
+      "primaryBackend": "alloy",
+      "clauses": [
+        {
+          "clause": "must[0]",
+          "coreIRNode": "clause:ACC-TENANT-001#must[0]",
+          "irKind": "relation",
+          "render": "implies(eq(entry.periodId, period.id), eq(entry.tenantId, period.tenantId))",
+          "generated": [
+            {
+              "backend": "alloy",
+              "generatedSelector": "TenantIsolation",
+              "artifact": "generated/alloy/AccountingTenant.als",
+              "artifactDigest": "sha256:494a4e93f9e78ecd81bdb605ccae9c1b",
+              "evidence": []
+            }
+          ]
+        },
+        {
+          "clause": "must[1]",
+          "coreIRNode": "clause:ACC-TENANT-001#must[1]",
+          "irKind": "relation",
+          "render": "implies(eq(line.journalEntryId, entry.id), eq(line.tenantId, entry.tenantId))",
+          "generated": [
+            {
+              "backend": "alloy",
+              "generatedSelector": "TenantIsolation",
+              "artifact": "generated/alloy/AccountingTenant.als",
+              "artifactDigest": "sha256:494a4e93f9e78ecd81bdb605ccae9c1b",
+              "evidence": []
+            }
+          ]
+        },
+        {
+          "clause": "must[2]",
+          "coreIRNode": "clause:ACC-TENANT-001#must[2]",
+          "irKind": "relation",
+          "render": "implies(eq(sync.journalEntryId, entry.id), eq(sync.tenantId, entry.tenantId))",
+          "generated": [
+            {
+              "backend": "alloy",
+              "generatedSelector": "TenantIsolation",
+              "artifact": "generated/alloy/AccountingTenant.als",
+              "artifactDigest": "sha256:494a4e93f9e78ecd81bdb605ccae9c1b",
+              "evidence": []
+            }
+          ]
+        }
+      ],
+      "implementationRefs": [
+        {
+          "kind": "implementation",
+          "file": "src/domain/tenant.mjs",
+          "anchor": "scopedQuery"
+        },
+        {
+          "kind": "db-constraint",
+          "file": "src/domain/tenant.mjs",
+          "anchor": "tenant_fk"
+        },
+        {
+          "kind": "test",
+          "file": "test/tenant.test.mjs",
+          "anchor": "ACC-TENANT-001"
+        }
+      ]
+    },
+    {
+      "ruleId": "ACC-SYNC-001",
+      "classification": "temporal-property",
+      "primaryStrategy": "tla",
+      "primaryBackend": "tla",
+      "clauses": [
+        {
+          "clause": "must[0]",
+          "coreIRNode": "clause:ACC-SYNC-001#must[0]",
+          "irKind": "temporal-property",
+          "render": "implies(and(success(a), and(success(b), and(eq(a.tenantId, b.tenantId), and(eq(a.provider, b.provider), eq(a.idempotencyKey, b.idempotencyKey))))), eq(a.externalId, b.externalId))",
+          "generated": [
+            {
+              "backend": "tla",
+              "generatedSelector": "IdempotentExternalSync",
+              "artifact": "generated/accounting/ExternalSync.tla",
+              "artifactDigest": "sha256:47348a47e048a2a635c6ca9dedf3b4eb",
+              "evidence": []
+            }
+          ]
+        }
+      ],
+      "implementationRefs": [
+        {
+          "kind": "implementation",
+          "file": "src/domain/sync.mjs",
+          "anchor": "completeSync"
+        },
+        {
+          "kind": "db-constraint",
+          "file": "src/domain/sync.mjs",
+          "anchor": "sync_unique"
+        },
+        {
+          "kind": "test",
+          "file": "test/sync.test.mjs",
+          "anchor": "ACC-SYNC-001"
+        }
+      ]
+    }
+  ],
+  "digest": "sha256:3039ddab92694463e2a5c4a707b5ec04"
+}

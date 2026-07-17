@@ -1,0 +1,47 @@
+/// Accounting domain pattern.
+///
+/// Domain-specific typing for the accounting MVP. Kept separate from the generic
+/// `dspec/Schema.pkl` so the base vocabulary stays domain-neutral (mirroring how
+/// DB / Cloud / Runtime patterns would be separated). These are refinements of
+/// the base `DomainType` / `Term` shapes, not a new bespoke DSL.
+///
+/// The Node toolchain does not require this file at runtime; it documents the
+/// intended entity shapes that `examples/accounting-core.pkl` instantiates.
+module dspec.domains.Accounting
+
+import "../Schema.pkl"
+
+/// Ledger period. `status` gates all mutation of contained journals.
+class AccountingPeriod {
+  id: String
+  tenantId: String
+  status: "open" | "closed"
+}
+
+/// A single side of a journal entry.
+class JournalLine {
+  id: String
+  journalEntryId: String
+  tenantId: String
+  side: "debit" | "credit"
+  amount: Int(this >= 0)
+}
+
+/// Double-entry journal. Balanced iff debit total == credit total.
+class JournalEntry {
+  id: String
+  tenantId: String
+  periodId: String
+  status: "draft" | "submitted" | "approved" | "posted"
+  lines: Listing<JournalLine>
+}
+
+/// Record of an idempotent push to an external accounting provider.
+class ExternalSyncRecord {
+  id: String
+  tenantId: String
+  provider: String
+  idempotencyKey: String
+  status: "pending" | "sending" | "success" | "failed" | "unknown"
+  externalId: String?
+}

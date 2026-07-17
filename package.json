@@ -1,0 +1,19 @@
+{
+  "name": "dspec",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "dspec — Pkl-authored domain specifications routed to Lean / TLA+ / Alloy / property tests, with honest assurance tracking.",
+  "bin": {
+    "dspec": "src/cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test 'test/**/*.test.mjs'"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@pkl-community/pkl": "^0.30.2"
+  }
+}

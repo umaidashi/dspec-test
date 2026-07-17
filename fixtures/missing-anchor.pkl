@@ -1,0 +1,36 @@
+/// FAILURE FIXTURE — implementation/test refs point at anchors that do not
+/// exist (equivalent to deleting a test anchor). `dspec drift` must fail.
+module fixtures.missingAnchor
+
+id = "missing-anchor"
+titleJa = "アンカー消失"
+titleEn = "missing anchor"
+boundaryJa = "フィクスチャ"
+boundaryEn = "fixture"
+
+terms = new Listing {}
+domainTypes = new Listing {}
+
+rules = new Listing {
+  new {
+    id = "FIX-ANCHOR-001"
+    titleJa = "消えたテストアンカー" titleEn = "deleted test anchor"
+    specJa = "参照先アンカーがテストから削除された。"
+    specEn = "The referenced anchor was deleted from the test."
+    classification = "pure-invariant"
+    primaryStrategy = "property-test"
+    auxiliaryStrategies = new Listing {}
+    requiredAssurances = new Listing { "reference" }
+    clauses = new Listing {
+      new { selector = "must[0]" kind = "must" ast = "eq(x, x)" }
+    }
+    checkTargets = new Listing {
+      new { backend = "property" coverage = "clause" covers = new Listing { "must[0]" } generatedSelector = "THIS-ANCHOR-DOES-NOT-EXIST" }
+    }
+    implementationRefs = new Listing {
+      new { kind = "test" file = "test/journal.test.mjs" anchor = "THIS-ANCHOR-DOES-NOT-EXIST" }
+    }
+  }
+}
+
+nonGoals = new Listing {}

@@ -1,0 +1,9 @@
+{
+  "ruleId": "ACC-SYNC-001",
+  "selector": "must[0]",
+  "backend": "tla",
+  "generatedSelector": "IdempotentExternalSync",
+  "assurance": "bounded",
+  "message": "同一の冪等性キーに異なるexternalIdが割り当てられました",
+  "messageEn": "Two successful syncs for the same idempotency context received different externalIds"
+}
