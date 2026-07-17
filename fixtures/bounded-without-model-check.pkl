@@ -1,0 +1,37 @@
+/// FAILURE FIXTURE — a rule demanding `bounded` assurance with no model-check /
+/// relational-check evidence source. `dspec coverage` must fail. A passing
+/// unit-test run must NOT be accepted for `bounded`.
+module fixtures.boundedWithoutModelCheck
+
+id = "bounded-without-model-check"
+titleJa = "モデル検査なしbounded要求"
+titleEn = "bounded required without model check"
+boundaryJa = "フィクスチャ"
+boundaryEn = "fixture"
+
+terms = new Listing {}
+domainTypes = new Listing {}
+
+rules = new Listing {
+  new {
+    id = "FIX-BOUNDED-001"
+    titleJa = "検査されない遷移" titleEn = "unchecked transition"
+    specJa = "本ルールはbounded保証を要求するが、モデル検査対象を持たない。"
+    specEn = "Requires bounded assurance but has no model-check target."
+    classification = "state-transition"
+    primaryStrategy = "implementation-test"
+    auxiliaryStrategies = new Listing {}
+    requiredAssurances = new Listing { "reference" "bounded" }
+    clauses = new Listing {
+      new { selector = "must[0]" kind = "must" ast = "implies(periodClosed(p), not(update(e)))" }
+    }
+    checkTargets = new Listing {
+      new { backend = "implementation" coverage = "rule" covers = new Listing { "must[0]" } generatedSelector = "some-impl-guard" }
+    }
+    implementationRefs = new Listing {
+      new { kind = "implementation" file = "src/domain/period.mjs" anchor = "assertMutable" }
+    }
+  }
+}
+
+nonGoals = new Listing {}

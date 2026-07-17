@@ -1,0 +1,38 @@
+/// FAILURE FIXTURE — a rule whose clause uses `sum` (unmapped on Alloy) but is
+/// routed to Alloy and demands `bounded`. Both routing (`dspec check`) and
+/// coverage must reject this: an unmapped backend cannot carry a strong
+/// assurance without silently changing the clause's meaning.
+module fixtures.unmappedStrongAssurance
+
+id = "unmapped-strong-assurance"
+titleJa = "未対応バックエンドへの過大保証要求"
+titleEn = "strong assurance on unmapped backend"
+boundaryJa = "フィクスチャ"
+boundaryEn = "fixture"
+
+terms = new Listing {}
+domainTypes = new Listing {}
+
+rules = new Listing {
+  new {
+    id = "FIX-UNMAPPED-001"
+    titleJa = "Alloyでの合計検査" titleEn = "sum checked on Alloy"
+    specJa = "合計計算を含むルールをAlloyへ投影しようとする。"
+    specEn = "Attempts to project a sum-based rule onto Alloy."
+    classification = "relational-invariant"
+    primaryStrategy = "alloy"
+    auxiliaryStrategies = new Listing {}
+    requiredAssurances = new Listing { "reference" "bounded" }
+    clauses = new Listing {
+      new { selector = "must[0]" kind = "must" ast = "eq(sum(entries, debitTotal), sum(entries, creditTotal))" }
+    }
+    checkTargets = new Listing {
+      new { backend = "alloy" coverage = "clause" covers = new Listing { "must[0]" } generatedSelector = "SumIsolation" }
+    }
+    implementationRefs = new Listing {
+      new { kind = "implementation" file = "src/domain/journal.mjs" anchor = "debitTotal" }
+    }
+  }
+}
+
+nonGoals = new Listing {}

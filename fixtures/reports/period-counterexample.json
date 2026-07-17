@@ -1,0 +1,10 @@
+{
+  "ruleId": "ACC-PERIOD-003",
+  "selector": "must[0]",
+  "backend": "tla",
+  "generatedSelector": "ClosedPeriodImmutable",
+  "assurance": "bounded",
+  "message": "締め済み期間で仕訳の作成/更新/削除が可能な状態遷移が見つかりました",
+  "messageEn": "Found a state transition that mutates a journal in a closed period",
+  "trace": ["CreateJournal", "ClosePeriod", "UpdateJournal"]
+}

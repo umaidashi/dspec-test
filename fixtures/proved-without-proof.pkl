@@ -1,0 +1,37 @@
+/// FAILURE FIXTURE — a rule demanding `proved` assurance with no proof-capable
+/// check target. `dspec coverage` must fail: no proof / decision-procedure
+/// evidence can exist for it.
+module fixtures.provedWithoutProof
+
+id = "proved-without-proof"
+titleJa = "証明なしproved要求"
+titleEn = "proved required without proof"
+boundaryJa = "フィクスチャ"
+boundaryEn = "fixture"
+
+terms = new Listing {}
+domainTypes = new Listing {}
+
+rules = new Listing {
+  new {
+    id = "FIX-PROVED-001"
+    titleJa = "証明されない定理" titleEn = "unproved theorem"
+    specJa = "本ルールはproved保証を要求するが、証明バックエンドを持たない。"
+    specEn = "Requires proved assurance but has no proof backend."
+    classification = "pure-invariant"
+    primaryStrategy = "property-test"
+    auxiliaryStrategies = new Listing {}
+    requiredAssurances = new Listing { "reference" "proved" }
+    clauses = new Listing {
+      new { selector = "must[0]" kind = "must" ast = "eq(x, x)" }
+    }
+    checkTargets = new Listing {
+      new { backend = "property" coverage = "clause" covers = new Listing { "must[0]" } generatedSelector = "prop_fix" }
+    }
+    implementationRefs = new Listing {
+      new { kind = "implementation" file = "src/domain/journal.mjs" anchor = "debitTotal" }
+    }
+  }
+}
+
+nonGoals = new Listing {}

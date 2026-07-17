@@ -1,0 +1,34 @@
+/// FAILURE FIXTURE — an approved rule whose check targets were deleted.
+/// `dspec coverage` must fail with uncovered-clause / missing-assurance.
+module fixtures.uncoveredClause
+
+id = "uncovered-clause"
+titleJa = "検証対象なしルール"
+titleEn = "rule without check targets"
+boundaryJa = "フィクスチャ"
+boundaryEn = "fixture"
+
+terms = new Listing {}
+domainTypes = new Listing {}
+
+rules = new Listing {
+  new {
+    id = "FIX-UNCOVERED-001"
+    titleJa = "対象のないルール" titleEn = "uncovered rule"
+    specJa = "checkTargetが削除された承認済みルール。"
+    specEn = "An approved rule whose check target was removed."
+    classification = "pure-invariant"
+    primaryStrategy = "property-test"
+    auxiliaryStrategies = new Listing {}
+    requiredAssurances = new Listing { "reference" "executed" }
+    clauses = new Listing {
+      new { selector = "must[0]" kind = "must" ast = "eq(debitTotal(entry), creditTotal(entry))" }
+    }
+    checkTargets = new Listing {}
+    implementationRefs = new Listing {
+      new { kind = "implementation" file = "src/domain/journal.mjs" anchor = "debitTotal" }
+    }
+  }
+}
+
+nonGoals = new Listing {}

@@ -1,0 +1,226 @@
+/// Accounting core — dspec MVP domain model.
+///
+/// Authoring source of truth. `dspec` normalizes this into a Canonical Core IR
+/// and routes each rule to exactly one primary backend (Lean / TLA+ / Alloy /
+/// property tests). Instantiates shapes from dspec/Schema.pkl and
+/// dspec/domains/Accounting.pkl.
+module examples.accounting.core
+
+id = "accounting-core"
+titleJa = "会計コアドメイン"
+titleEn = "Accounting Core Domain"
+
+boundaryJa = "日本の中小企業向けクラウド会計の最小中核。仕訳の貸借一致、締め済み期間の不変性、テナント分離、外部同期の冪等性のみを対象とする。税法・会計基準・財務諸表生成・税額計算・勘定科目推定・freee/MoneyForward実通信・実DB接続は対象外。"
+boundaryEn = "Minimal core of cloud accounting for Japanese SMBs. Covers only journal balance, closed-period immutability, tenant isolation, and external-sync idempotency. Tax law, accounting standards, statement generation, tax computation, account inference, real freee/MoneyForward calls, and real DB connections are out of scope."
+
+terms = new Listing {
+  new { id = "accounting.tenant"          labelJa = "テナント"           labelEn = "Tenant" }
+  new { id = "accounting.period"          labelJa = "会計期間"           labelEn = "Accounting period" }
+  new { id = "accounting.journal-entry"   labelJa = "仕訳"               labelEn = "Journal entry" }
+  new { id = "accounting.journal-line"    labelJa = "仕訳明細"           labelEn = "Journal line" }
+  new { id = "accounting.debit"           labelJa = "借方"               labelEn = "Debit" }
+  new { id = "accounting.credit"          labelJa = "貸方"               labelEn = "Credit" }
+  new { id = "accounting.period-open"     labelJa = "期間オープン"       labelEn = "Period open" }
+  new { id = "accounting.period-closed"   labelJa = "期間クローズ"       labelEn = "Period closed" }
+  new { id = "accounting.external-sync"   labelJa = "外部同期"           labelEn = "External sync" }
+  new { id = "accounting.idempotency-key" labelJa = "冪等キー"           labelEn = "Idempotency key" }
+  new { id = "accounting.external-id"     labelJa = "外部ID"             labelEn = "External id" }
+  new { id = "accounting.journal-status"  labelJa = "仕訳ステータス"     labelEn = "Journal status" }
+}
+
+domainTypes = new Listing {
+  new {
+    id = "AccountingPeriod" kind = "entity"
+    labelJa = "会計期間" labelEn = "Accounting period"
+    fields = new Listing {
+      new { name = "id" type = "String" }
+      new { name = "tenantId" type = "String" }
+      new { name = "status" type = "enum:open|closed" }
+    }
+  }
+  new {
+    id = "JournalEntry" kind = "entity"
+    labelJa = "仕訳" labelEn = "Journal entry"
+    fields = new Listing {
+      new { name = "id" type = "String" }
+      new { name = "tenantId" type = "String" }
+      new { name = "periodId" type = "String" }
+      new { name = "status" type = "enum:draft|submitted|approved|posted" }
+      new { name = "lines" type = "list:JournalLine" }
+    }
+  }
+  new {
+    id = "JournalLine" kind = "value"
+    labelJa = "仕訳明細" labelEn = "Journal line"
+    fields = new Listing {
+      new { name = "id" type = "String" }
+      new { name = "journalEntryId" type = "String" }
+      new { name = "tenantId" type = "String" }
+      new { name = "side" type = "enum:debit|credit" }
+      new { name = "amount" type = "Int" }
+    }
+  }
+  new {
+    id = "ExternalSyncRecord" kind = "entity"
+    labelJa = "外部同期記録" labelEn = "External sync record"
+    fields = new Listing {
+      new { name = "id" type = "String" }
+      new { name = "tenantId" type = "String" }
+      new { name = "provider" type = "String" }
+      new { name = "idempotencyKey" type = "String" }
+      new { name = "status" type = "enum:pending|sending|success|failed|unknown" }
+      new { name = "externalId" type = "String" }
+    }
+  }
+}
+
+rules = new Listing {
+  new {
+    id = "ACC-JOURNAL-001"
+    titleJa = "仕訳の貸借一致"
+    titleEn = "Journal debit/credit balance"
+    specJa = "承認済みまたは記帳済みの仕訳は、借方合計と貸方合計が一致しなければならない。"
+    specEn = "An approved or posted journal entry must have equal debit and credit totals."
+    classification = "numeric-invariant"
+    primaryStrategy = "lean"
+    auxiliaryStrategies = new Listing { "property-test" "implementation-test" }
+    requiredAssurances = new Listing { "reference" "executed" "mutation-tested" "proved" }
+    clauses = new Listing {
+      new {
+        selector = "must[0]" kind = "must"
+        labelJa = "承認済み/記帳済みは貸借一致" labelEn = "approved/posted entries balance"
+        ast = "implies(isApprovedOrPosted(entry), eq(debitTotal(entry), creditTotal(entry)))"
+      }
+      new {
+        selector = "must[1]" kind = "must"
+        labelJa = "貸借一致仕訳の集計は試算表でも一致" labelEn = "aggregation of balanced entries preserves balance"
+        ast = "implies(forall(e, entries, balanced(e)), eq(sum(entries, debitTotal), sum(entries, creditTotal)))"
+      }
+    }
+    checkTargets = new Listing {
+      new { backend = "lean" coverage = "clause" covers = new Listing { "must[0]" } generatedSelector = "journal_balanced" }
+      new { backend = "lean" coverage = "clause" covers = new Listing { "must[1]" } generatedSelector = "trial_balance_preserved" }
+      new { backend = "property" coverage = "clause" covers = new Listing { "must[0]" } generatedSelector = "prop_balanced" }
+    }
+    implementationRefs = new Listing {
+      new { kind = "implementation" file = "src/domain/journal.mjs" anchor = "debitTotal" }
+      new { kind = "test" file = "test/journal.test.mjs" anchor = "ACC-JOURNAL-001" }
+    }
+    provesJa = "有限リストの金額合計の等式、および貸借一致仕訳集合の集計保存。"
+    provesEn = "Equality of finite line-amount sums, and aggregation preservation over balanced entries."
+    notProvenJa = "DBから正しい明細が読めること・通貨/端数処理・外部システムの金額表現・UI入力変換の正しさ。"
+    notProvenEn = "That correct lines are read from the DB, currency/rounding, external money representations, or UI input conversion."
+  }
+  new {
+    id = "ACC-PERIOD-003"
+    titleJa = "締め済み期間の変更禁止"
+    titleEn = "Closed period is immutable"
+    specJa = "締め済み会計期間に属する仕訳は、作成・更新・削除できない。"
+    specEn = "Journal entries in a closed accounting period cannot be created, updated, or deleted."
+    classification = "state-transition"
+    primaryStrategy = "tla"
+    auxiliaryStrategies = new Listing { "implementation-test" }
+    requiredAssurances = new Listing { "reference" "executed" "bounded" }
+    clauses = new Listing {
+      new {
+        selector = "must[0]" kind = "must"
+        labelJa = "締め済みなら作成/更新/削除不可" labelEn = "closed forbids create/update/delete"
+        ast = "implies(periodClosed(periodOf(entry)), and(not(create(entry)), and(not(update(entry)), not(delete(entry)))))"
+      }
+    }
+    checkTargets = new Listing {
+      new { backend = "tla" coverage = "clause" covers = new Listing { "must[0]" } generatedSelector = "ClosedPeriodImmutable" }
+      new { backend = "implementation" coverage = "rule" covers = new Listing { "must[0]" } generatedSelector = "period-guard" }
+    }
+    implementationRefs = new Listing {
+      new { kind = "implementation" file = "src/domain/period.mjs" anchor = "assertMutable" }
+      new { kind = "test" file = "test/period.test.mjs" anchor = "ACC-PERIOD-003" }
+    }
+    provesJa = "有限scope上で、締め後に作成/更新/削除へ到達する状態遷移が存在しないこと。"
+    provesEn = "That over a finite scope no state transition reaches create/update/delete after close."
+    notProvenJa = "無限状態空間全体・実DBのトランザクション分離・並行制御実装の正しさ。"
+    notProvenEn = "The full infinite state space, real DB transaction isolation, or concurrency-control implementation."
+  }
+  new {
+    id = "ACC-TENANT-001"
+    titleJa = "テナント間参照禁止"
+    titleEn = "No cross-tenant references"
+    specJa = "仕訳・仕訳明細・会計期間・外部同期記録は同じテナントに属さなければならない。"
+    specEn = "Journal entries, lines, periods, and external-sync records must belong to the same tenant."
+    classification = "relational-invariant"
+    primaryStrategy = "alloy"
+    auxiliaryStrategies = new Listing { "implementation-test" }
+    requiredAssurances = new Listing { "reference" "executed" "bounded" }
+    clauses = new Listing {
+      new {
+        selector = "must[0]" kind = "must"
+        labelJa = "仕訳と期間のテナント一致" labelEn = "entry/period tenant match"
+        ast = "implies(eq(entry.periodId, period.id), eq(entry.tenantId, period.tenantId))"
+      }
+      new {
+        selector = "must[1]" kind = "must"
+        labelJa = "明細と仕訳のテナント一致" labelEn = "line/entry tenant match"
+        ast = "implies(eq(line.journalEntryId, entry.id), eq(line.tenantId, entry.tenantId))"
+      }
+      new {
+        selector = "must[2]" kind = "must"
+        labelJa = "同期記録と仕訳のテナント一致" labelEn = "sync/entry tenant match"
+        ast = "implies(eq(sync.journalEntryId, entry.id), eq(sync.tenantId, entry.tenantId))"
+      }
+    }
+    checkTargets = new Listing {
+      new { backend = "alloy" coverage = "clause" covers = new Listing { "must[0]" "must[1]" "must[2]" } generatedSelector = "TenantIsolation" }
+      new { backend = "implementation" coverage = "rule" covers = new Listing { "must[1]" } generatedSelector = "repository-tenant-scope" }
+    }
+    implementationRefs = new Listing {
+      new { kind = "implementation" file = "src/domain/tenant.mjs" anchor = "scopedQuery" }
+      new { kind = "db-constraint" file = "src/domain/tenant.mjs" anchor = "tenant_fk" }
+      new { kind = "test" file = "test/tenant.test.mjs" anchor = "ACC-TENANT-001" }
+    }
+    provesJa = "有限scope上で、別テナントの期間/仕訳を参照する仕訳/明細/同期記録が存在しないこと。"
+    provesEn = "That over a finite scope no entry/line/sync references a period/entry of another tenant."
+    notProvenJa = "無限個のインスタンス・実DBの外部キー実装・アプリ層の権限チェック全体。"
+    notProvenEn = "Unbounded instances, the real DB foreign-key implementation, or the full app-layer authorization."
+  }
+  new {
+    id = "ACC-SYNC-001"
+    titleJa = "外部同期の冪等性"
+    titleEn = "External sync idempotency"
+    specJa = "同一テナント・同一provider・同一冪等キーで成功した同期は、同一のexternalIdを指さなければならない。"
+    specEn = "Successful syncs with the same tenant, provider, and idempotency key must point to the same externalId."
+    classification = "temporal-property"
+    primaryStrategy = "tla"
+    auxiliaryStrategies = new Listing { "implementation-test" }
+    requiredAssurances = new Listing { "reference" "executed" "bounded" }
+    clauses = new Listing {
+      new {
+        selector = "must[0]" kind = "must"
+        labelJa = "同一キー成功は同一externalId" labelEn = "same key success implies same externalId"
+        ast = "implies(and(success(a), and(success(b), and(eq(a.tenantId, b.tenantId), and(eq(a.provider, b.provider), eq(a.idempotencyKey, b.idempotencyKey))))), eq(a.externalId, b.externalId))"
+      }
+    }
+    checkTargets = new Listing {
+      new { backend = "tla" coverage = "clause" covers = new Listing { "must[0]" } generatedSelector = "IdempotentExternalSync" }
+      new { backend = "implementation" coverage = "rule" covers = new Listing { "must[0]" } generatedSelector = "sync-idempotency" }
+    }
+    implementationRefs = new Listing {
+      new { kind = "implementation" file = "src/domain/sync.mjs" anchor = "completeSync" }
+      new { kind = "db-constraint" file = "src/domain/sync.mjs" anchor = "sync_unique" }
+      new { kind = "test" file = "test/sync.test.mjs" anchor = "ACC-SYNC-001" }
+    }
+    provesJa = "有限scope上で、同一(tenant,provider,key)の成功が異なるexternalIdを持つ状態へ到達しないこと。"
+    provesEn = "That over a finite scope no reachable state gives two successes for the same (tenant,provider,key) different externalIds."
+    notProvenJa = "実外部APIの動作・ネットワーク分断の全パターン・無限リトライ空間。"
+    notProvenEn = "Real external API behavior, all network-partition patterns, or the unbounded retry space."
+  }
+}
+
+nonGoals = new Listing {
+  "日本の税法全体 / entire Japanese tax law"
+  "会計基準全体 / entire accounting standards"
+  "財務諸表生成 / financial statement generation"
+  "税額計算全般 / general tax computation"
+  "勘定科目自動推定 / automatic account inference"
+  "freee / Money Forward API 実通信 / real external API traffic"
+  "実運用DB接続 / production DB connectivity"
+}

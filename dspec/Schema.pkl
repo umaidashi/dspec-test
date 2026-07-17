@@ -1,0 +1,123 @@
+/// dspec base vocabulary.
+///
+/// This file is the human- and LLM-facing authoring contract for a dspec model.
+/// It is intended to be evaluated by the real `pkl` toolchain. The dspec Node
+/// toolchain validates instance files against a mirror of these shapes in
+/// `src/core/schema.mjs` (so the project is self-contained when `pkl` is absent).
+///
+/// Domain-specific entities and patterns MUST NOT be added here. They belong in
+/// a domain pattern module such as `dspec/domains/Accounting.pkl`.
+module dspec.Schema
+
+/// A stable domain-vocabulary term with bilingual labels.
+class Term {
+  /// Stable identifier, e.g. "accounting.tenant". Never renamed once approved.
+  id: String
+  labelJa: String
+  labelEn: String
+  description: String?
+}
+
+/// A field of a domain entity or value object.
+class Field {
+  name: String
+  /// Primitive kind or the id of another domain type: "String" | "Int" | "Bool"
+  /// | "enum:<a|b|c>" | "ref:<TypeName>" | "list:<TypeName>".
+  type: String
+  description: String?
+}
+
+/// Core IR "kind" of a domain type. See docs/accounting-domain.md.
+typealias DomainKind = "entity" | "value" | "state"
+
+class DomainType {
+  id: String
+  kind: DomainKind
+  labelJa: String
+  labelEn: String
+  fields: Listing<Field>
+}
+
+/// A single logical obligation, authored as a function-call expression string
+/// (parsed by src/core/expr.mjs). `selector` is a stable within-rule address.
+class Clause {
+  selector: String
+  /// "must" (invariant that must hold) | "mustNot" (forbidden pattern).
+  kind: "must" | "mustNot"
+  /// Expression source, e.g. implies(isApprovedOrPosted(entry), eq(...)).
+  ast: String
+  labelJa: String?
+  labelEn: String?
+}
+
+/// A pointer from a rule into an implementation or test artifact. `anchor` is a
+/// stable symbol/name that drift-detection watches.
+class ImplementationRef {
+  kind: "implementation" | "test" | "db-constraint"
+  file: String
+  anchor: String
+  description: String?
+}
+
+/// A concrete verification obligation for a rule, bound to one backend.
+class CheckTarget {
+  /// "lean" | "tla" | "alloy" | "property" | "implementation".
+  backend: String
+  /// Which clause selectors this target covers.
+  covers: Listing<String>
+  /// Coverage granularity. "clause" is preferred where achievable.
+  coverage: "clause" | "rule"
+  /// Name of the generated theorem / invariant / assertion / property this
+  /// target drives, watched by drift-detection.
+  generatedSelector: String?
+}
+
+typealias Classification =
+  "pure-invariant" | "numeric-invariant" | "relational-invariant"
+  | "state-transition" | "temporal-property" | "authorization-policy"
+  | "runtime-obligation"
+
+typealias Strategy =
+  "lean" | "tla" | "alloy" | "property-test" | "implementation-test"
+  | "runtime-evidence"
+
+typealias Assurance =
+  "reference" | "executed" | "mutation-tested" | "bounded" | "proved"
+
+class Rule {
+  /// Stable rule id, e.g. "ACC-JOURNAL-001".
+  id: String
+  titleJa: String
+  titleEn: String
+  /// Human-facing specification prose.
+  specJa: String
+  specEn: String
+  classification: Classification
+  /// Primary verification strategy. Defaults from classification when omitted.
+  primaryStrategy: Strategy?
+  /// Auxiliary strategies, informational.
+  auxiliaryStrategies: Listing<Strategy>
+  /// Assurance levels this rule requires to be considered satisfied.
+  requiredAssurances: Listing<Assurance>
+  clauses: Listing<Clause>
+  checkTargets: Listing<CheckTarget>
+  implementationRefs: Listing<ImplementationRef>
+  /// Prose: what the primary backend proves/checks, and what it does not.
+  provesJa: String?
+  provesEn: String?
+  notProvenJa: String?
+  notProvenEn: String?
+}
+
+class Model {
+  id: String
+  titleJa: String
+  titleEn: String
+  /// Explicit statement of what is in and out of scope for this model.
+  boundaryJa: String
+  boundaryEn: String
+  terms: Listing<Term>
+  domainTypes: Listing<DomainType>
+  rules: Listing<Rule>
+  nonGoals: Listing<String>
+}
