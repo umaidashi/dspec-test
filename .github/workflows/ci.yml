@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Installs @pkl-community/pkl, so the real Pkl evaluator is
+      # authoritative in CI (dspec check reports "evaluator: pkl (real)").
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit / property / failure-mode tests
+        run: npm test
+
+      - name: dspec verification pipeline
+        run: |
+          node src/cli.mjs check examples/accounting-core.pkl
+          node src/cli.mjs drift examples/accounting-core.pkl
+          node src/cli.mjs coverage examples/accounting-core.pkl
+          node src/cli.mjs domain-coverage examples/accounting-core.pkl
+          node src/cli.mjs verify-generated examples/accounting-core.pkl
+          node src/cli.mjs evidence verify examples/accounting-core.pkl
+
+      - name: Mutation catalog (all mutants must be caught)
+        run: node src/cli.mjs mutation
